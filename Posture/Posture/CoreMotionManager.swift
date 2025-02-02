@@ -4,13 +4,12 @@
 //
 //  Created by Natan Camargo Rodrigues on 12/1/2025.
 //
-
 import Foundation
 import CoreMotion
 import UIKit
 
 class CoreMotionManager: ObservableObject {
-    
+    static let shared = CoreMotionManager()
     private let motionManager: CMMotionManager
     private var backgroundTaskID: UIBackgroundTaskIdentifier = .invalid
     private var movementCheckTimer: Timer?
@@ -42,6 +41,7 @@ class CoreMotionManager: ObservableObject {
     }
     
     func stopUpdates() {
+        movementCheckTimer?.invalidate()
         motionManager.stopDeviceMotionUpdates()
         endBackgroundTask()
     }
@@ -72,8 +72,8 @@ class CoreMotionManager: ObservableObject {
     private func scheduleMotionReactivation() {
         movementCheckTimer?.invalidate() //not duplicated timers
         
-        movementCheckTimer = Timer.scheduledTimer(withTimeInterval: 90, repeats: false) { [weak self] _ in
-            guard let self = self else { print("⚠️ Motion manager was deallocated before reactivation. Timer stopped."); return } //TODO: deal with returning
+        movementCheckTimer = Timer.scheduledTimer(withTimeInterval: 60, repeats: false) { [weak self] _ in
+            guard let self = self else { print("⚠️ Motion manager was deallocated before reactivation. Timer stopped."); return } //TODO: deal with timer returning
             print("Timer starting background motion updates...")
             self.startUpdates()
         }
