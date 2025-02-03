@@ -22,6 +22,9 @@ struct PostureApp: App {
 //            fatalError("Could not create ModelContainer: \(error)")
 //        }
 //    }()
+    init() {
+        _ = MonitorManager.shared //init when reopen app
+    }
 
     var body: some Scene {
         WindowGroup {
